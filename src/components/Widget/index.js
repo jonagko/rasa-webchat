@@ -32,7 +32,15 @@ class Widget extends Component {
     this.messages = [];
     setInterval(() => {
       if (this.messages.length > 0) {
-        this.dispatchMessage(this.messages.shift());
+        let msg_date = new Date();
+        let from_data = {
+          use_from_who: this.props.use_from_who,
+          name: this.props.bot_name,
+          msg_date: msg_date,
+          from_user_msg_footer: this.props.from_user_msg_footer,
+          from_bot_msg_footer: this.props.from_bot_msg_footer
+        };
+        this.dispatchMessage(this.messages.shift(), from_data);
       }
     }, this.props.interval);
   }
@@ -44,7 +52,7 @@ class Widget extends Component {
       this.messages.push(botUttered);
     });
 
-    this.props.dispatch(pullSession());
+    this.props.dispatch(pullSession(this.get_functions()));
 
     // Request a session from server
     const local_id = this.getSessionId();
@@ -70,7 +78,7 @@ class Widget extends Component {
         // Store the received session_id to storage
 
         storeLocalSession(storage, SESSION_NAME, remote_id);
-        this.props.dispatch(pullSession());
+        this.props.dispatch(pullSession(this.get_functions()));
         this.trySendInitPayload()
       } else {
         // If this is an existing session, it's possible we changed pages and want to send a
@@ -103,7 +111,7 @@ class Widget extends Component {
   }
 
   componentDidUpdate() {
-    this.props.dispatch(pullSession());
+    this.props.dispatch(pullSession(this.get_functions()));
     this.trySendInitPayload();
     if (this.props.embedded && this.props.initialized) {
       this.props.dispatch(showChat());
@@ -114,6 +122,15 @@ class Widget extends Component {
   componentWillUnmount() {
     const { socket } = this.props;
     socket.close();
+  }
+
+  get_functions() {
+    const { from_bot_msg_footer, from_user_msg_footer, customComponent } = this.props;
+    return {
+      from_bot_msg_footer,
+      from_user_msg_footer,
+      customComponent
+    };
   }
 
   getSessionId() {
@@ -158,15 +175,16 @@ class Widget extends Component {
     this.props.dispatch(toggleChat());
   };
 
-  dispatchMessage(message) {
+  dispatchMessage(message, from_data) {
     if (Object.keys(message).length === 0) {
       return;
     }
 
     if (isText(message)) {
-      this.props.dispatch(addResponseMessage(message.text));
+      this.props.dispatch(addResponseMessage(message.text, from_data));
     } else if (isQR(message)) {
-      this.props.dispatch(addQuickReply(message));
+      from_data.user_name = this.props.user_name;
+      this.props.dispatch(addQuickReply(message, from_data));
     } else if (isSnippet(message)) {
       const element = message.attachment.payload.elements[0];
       this.props.dispatch(addLinkSnippet({
@@ -200,7 +218,13 @@ class Widget extends Component {
     event.preventDefault();
     const userUttered = event.target.message.value;
     if (userUttered) {
-      this.props.dispatch(addUserMessage(userUttered));
+      let msg_date = new Date();
+      let from_data = {
+        use_from_who: this.props.use_from_who,
+        name: this.props.user_name,
+        msg_date: msg_date
+      };
+      this.props.dispatch(addUserMessage(userUttered, from_data));
       this.props.dispatch(emitUserMessage(userUttered));
     }
     event.target.message.value = '';
@@ -258,7 +282,12 @@ Widget.propTypes = {
   initialized: PropTypes.bool,
   openLauncherImage: PropTypes.string,
   closeImage: PropTypes.string,
-  customComponent: PropTypes.func
+  customComponent: PropTypes.func,
+  use_from_who: PropTypes.bool,
+  user_name: PropTypes.string,
+  bot_name: PropTypes.string,
+  from_user_msg_footer: PropTypes.func,
+  from_bot_msg_footer: PropTypes.func
 };
 
 Widget.defaultProps = {

@@ -8,7 +8,7 @@ import socket from './socket';
 
 const ConnectedWidget = (props) => {
   const sock = socket(props.socketUrl, props.customData, props.socketPath);
-  const storage = props.params.storage == "session" ? sessionStorage : localStorage
+  const storage = props.params.storage == "session" ? sessionStorage : localStorage;
   initStore(
     props.inputTextFieldHint,
     props.connectingText,
@@ -36,6 +36,11 @@ const ConnectedWidget = (props) => {
       openLauncherImage={props.openLauncherImage}
       closeImage={props.closeImage}
       customComponent={props.customComponent}
+      use_from_who={props.use_from_who}
+      user_name={props.user_name}
+      bot_name={props.bot_name}
+      from_user_msg_footer={props.from_user_msg_footer}
+      from_bot_msg_footer={props.from_bot_msg_footer}
     />
   </Provider>);
 };
@@ -61,7 +66,12 @@ ConnectedWidget.propTypes = {
   openLauncherImage: PropTypes.string,
   closeImage: PropTypes.string,
   docViewer: PropTypes.bool,
-  customComponent: PropTypes.func
+  customComponent: PropTypes.func,
+  use_from_who: PropTypes.bool,
+  user_name: PropTypes.string,
+  bot_name: PropTypes.string,
+  from_user_msg_footer: PropTypes.func,
+  from_bot_msg_footer: PropTypes.func
 };
 
 ConnectedWidget.defaultProps = {
@@ -78,7 +88,8 @@ ConnectedWidget.defaultProps = {
   params: {
     storage: 'local'
   },
-  docViewer: false
+  docViewer: false,
+  use_from_who: false
 };
 
 export default ConnectedWidget;

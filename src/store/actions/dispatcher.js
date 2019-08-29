@@ -21,16 +21,16 @@ export function disconnect() {
   store.dispatch(actions.disconnect());
 }
 
-export function addUserMessage(text) {
-  store.dispatch(actions.addUserMessage(text));
+export function addUserMessage(text, from_data) {
+  store.dispatch(actions.addUserMessage(text, from_data));
 }
 
 export function emitUserMessage(text) {
   store.dispatch(actions.emitUserMessage(text));
 }
 
-export function addResponseMessage(text) {
-  store.dispatch(actions.addResponseMessage(text));
+export function addResponseMessage(text, from_data) {
+  store.dispatch(actions.addResponseMessage(text, from_data));
 }
 
 export function addLinkSnippet(link) {
@@ -45,8 +45,8 @@ export function addImageSnippet(image) {
   store.dispatch(actions.addImageSnippet(image));
 }
 
-export function addQuickReply(quickReply) {
-  store.dispatch(actions.addQuickReply(quickReply));
+export function addQuickReply(quickReply, from_data) {
+  store.dispatch(actions.addQuickReply(quickReply, from_data));
 }
 
 export function setQuickReply(id, title) {
@@ -93,6 +93,6 @@ export function dropMessages() {
   store.dispatch(actions.dropMessages());
 }
 
-export function pullSession() {
-  store.dispatch(actions.pullSession());
+export function pullSession(functions) {
+  store.dispatch(actions.pullSession(functions));
 }

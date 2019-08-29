@@ -23,10 +23,10 @@ export default function (storage) {
     switch (action.type) {
       // Each change to the redux store's message list gets recorded to storage
       case actionTypes.ADD_NEW_USER_MESSAGE: {
-        return storeMessage(state.push(createNewMessage(action.text, MESSAGE_SENDER.CLIENT)))
+        return storeMessage(state.push(createNewMessage(action.text, MESSAGE_SENDER.CLIENT, action.from_data)))
       }
       case actionTypes.ADD_NEW_RESPONSE_MESSAGE: {
-        return storeMessage(state.push(createNewMessage(action.text, MESSAGE_SENDER.RESPONSE)));
+        return storeMessage(state.push(createNewMessage(action.text, MESSAGE_SENDER.RESPONSE, action.from_data)));
       }
       case actionTypes.ADD_NEW_LINK_SNIPPET: {
         return storeMessage(state.push(createLinkSnippet(action.link, MESSAGE_SENDER.RESPONSE)));
@@ -38,7 +38,7 @@ export default function (storage) {
         return storeMessage(state.push(createImageSnippet(action.image, MESSAGE_SENDER.RESPONSE)));
       }
       case actionTypes.ADD_QUICK_REPLY: {
-        return storeMessage(state.push(createQuickReply(action.quickReply, MESSAGE_SENDER.RESPONSE)));
+        return storeMessage(state.push(createQuickReply(action.quickReply, MESSAGE_SENDER.RESPONSE, action.from_data)));
       }
       case actionTypes.ADD_COMPONENT_MESSAGE: {
         return storeMessage(state.push(createComponentMessage(action.component, action.props, action.showAvatar)));
@@ -54,7 +54,8 @@ export default function (storage) {
       }
       // Pull conversation from storage, parsing as immutable List
       case actionTypes.PULL_SESSION: {
-        const localSession = getLocalSession(storage, SESSION_NAME);
+        const functions = action.functions;
+        const localSession = getLocalSession(storage, SESSION_NAME, functions);
         if (localSession) {
           return List(localSession.conversation);
         } else {

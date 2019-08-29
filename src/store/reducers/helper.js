@@ -4,13 +4,14 @@ import { MESSAGES_TYPES, MESSAGE_SENDER, SESSION_NAME } from 'constants';
 import { Video, Image, Message, Snippet, QuickReply } from 'messagesComponents';
 
 
-export function createNewMessage(text, sender) {
+export function createNewMessage(text, sender, from_data) {
   return Map({
     type: MESSAGES_TYPES.TEXT,
     component: Message,
     text,
     sender,
-    showAvatar: sender === MESSAGE_SENDER.RESPONSE
+    showAvatar: sender === MESSAGE_SENDER.RESPONSE,
+    from_data
   });
 }
 
@@ -49,7 +50,7 @@ export function createImageSnippet(image, sender) {
   });
 }
 
-export function createQuickReply(quickReply, sender) {
+export function createQuickReply(quickReply, sender, from_data) {
   return Map({
     type: MESSAGES_TYPES.QUICK_REPLY,
     component: QuickReply,
@@ -58,7 +59,8 @@ export function createQuickReply(quickReply, sender) {
     quick_replies: List(quickReply.quick_replies),
     sender,
     showAvatar: true,
-    chosenReply: null
+    chosenReply: null,
+    from_data
   });
 }
 
@@ -72,7 +74,7 @@ export function createComponentMessage(component, props, showAvatar) {
   });
 }
 
-export function getLocalSession(storage, key) {
+export function getLocalSession(storage, key, functions) {
   // Attempt to get local session from storage
   const cachedSession = storage.getItem(key);
   var session = null;
@@ -81,7 +83,14 @@ export function getLocalSession(storage, key) {
     let parsedSession = JSON.parse(cachedSession)
     // Format conversation from array of object to immutable Map for use by messages components
     const formattedConversation = parsedSession.conversation
-      ? Object.values(parsedSession.conversation).map(item => Map(item))
+      ? Object.values(parsedSession.conversation).map((item) => {
+        let mapped_item = Map(item);
+        if (functions && mapped_item.get('from_data')) {
+          mapped_item.get('from_data').from_bot_msg_footer = functions.from_bot_msg_footer;
+          mapped_item.get('from_data').from_user_msg_footer = functions.from_user_msg_footer;
+        }
+        return mapped_item;
+      })
       : [];
     // Check if params is undefined
     const formattedParams = parsedSession.params

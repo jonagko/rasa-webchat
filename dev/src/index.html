@@ -8,6 +8,13 @@
 <script src="index.js" type="text/javascript"></script>
 <div id="webchat"></div>
 <script>
+    function append_leading_zeroes(n) {
+      if (n <= 9) {
+        return '0' + n;
+      }
+      return n;
+    }
+
   WebChat.default.init({
     selector: "#webchat",
     initPayload: "/get_started",
@@ -17,6 +24,9 @@
     inputTextFieldHint: "Type a message...",
     connectingText: "Waiting for server...",
     docViewer: false,
+    use_from_who: true,
+    bot_name: "Asistente virtual",
+    user_name: "Usuario",
     params: {
       images: {
         dims: {
@@ -25,6 +35,17 @@
         }
       },
       storage: "local"
+    },
+    from_bot_msg_footer: function (datetime) {
+      const bot_name = 'Asistente virtual';
+      let new_date = new Date(datetime);
+      const hours = append_leading_zeroes(new_date.getHours());
+      const minutes = append_leading_zeroes(new_date.getMinutes());
+      const seconds = append_leading_zeroes(new_date.getSeconds());
+      if (new_date) {
+        return bot_name + ' a las ' + hours + ':' + minutes + ':' + seconds;
+      }
+      return bot_name;
     }
   })
 </script>

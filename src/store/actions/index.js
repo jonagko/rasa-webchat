@@ -73,10 +73,11 @@ export function changeInputFieldHint(hint) {
   };
 }
 
-export function addUserMessage(text) {
+export function addUserMessage(text, from_data) {
   return {
     type: actions.ADD_NEW_USER_MESSAGE,
-    text
+    text,
+    from_data
   };
 }
 
@@ -87,10 +88,11 @@ export function emitUserMessage(text) {
   };
 }
 
-export function addResponseMessage(text) {
+export function addResponseMessage(text, from_data) {
   return {
     type: actions.ADD_NEW_RESPONSE_MESSAGE,
-    text
+    text,
+    from_data
   };
 }
 
@@ -115,10 +117,11 @@ export function addImageSnippet(image) {
   };
 }
 
-export function addQuickReply(quickReply) {
+export function addQuickReply(quickReply, from_data) {
   return {
     type: actions.ADD_QUICK_REPLY,
-    quickReply
+    quickReply,
+    from_data
   };
 }
 
@@ -153,9 +156,10 @@ export function dropMessages() {
   };
 }
 
-export function pullSession() {
+export function pullSession(functions) {
   return {
-    type: actions.PULL_SESSION
+    type: actions.PULL_SESSION,
+    functions
   };
 }
 

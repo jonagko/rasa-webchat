@@ -25,6 +25,11 @@ const plugin = {
         openLauncherImage={args.openLauncherImage}
         closeImage={args.closeImage}
         docViewer={args.docViewer}
+        use_from_who={args.use_from_who}
+        user_name={args.user_name}
+        bot_name={args.bot_name}
+        from_user_msg_footer={args.from_user_msg_footer}
+        from_bot_msg_footer={args.from_bot_msg_footer}
       />, document.querySelector(args.selector)
     );
   }
