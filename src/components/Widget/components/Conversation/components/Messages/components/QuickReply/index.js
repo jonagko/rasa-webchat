@@ -33,10 +33,11 @@ class QuickReply extends PureComponent {
   }
 
   render() {
-    // const chosenReply = this.props.getChosenReply(this.props.id);
-    // if (chosenReply) {
-    //   return <Message message={this.props.message} />
-    // }
+    const chosenReply = this.props.getChosenReply(this.props.id);
+    const hide_buttons = this.props.message.get('hide_buttons');
+    if (chosenReply && hide_buttons) {
+      return <Message message={this.props.message} />
+    }
     return (
       <div>
         <Message message={this.props.message} />

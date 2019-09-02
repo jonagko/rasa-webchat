@@ -25,8 +25,28 @@ export function isText(message) {
   return Object.keys(message).length === 1 && Object.keys(message).includes('text');
 }
 
-export function isQR(message) {
+function _isCustomQR(message) {
+  return Object.keys(message).includes('attachment')
+  && Object.keys(message.attachment).includes('type')
+  && message.attachment.type === 'template'
+  && Object.keys(message.attachment).includes('payload')
+  && Object.keys(message.attachment.payload).includes('elements')
+}
+
+function _isQR(message) {
   return Object.keys(message).length === 2
     && Object.keys(message).includes('text')
     && Object.keys(message).includes('quick_replies');
+}
+
+export function isQR(message) {
+  return _isQR(message) || _isCustomQR(message);
+}
+
+export function extractMessageQR(message) {
+  if (_isCustomQR(message)) {
+    return message.attachment.payload.elements[0];
+  } else {
+    return message;
+  }
 }

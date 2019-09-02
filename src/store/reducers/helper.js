@@ -60,6 +60,7 @@ export function createQuickReply(quickReply, sender, from_data) {
     sender,
     showAvatar: true,
     chosenReply: null,
+    hide_buttons: quickReply.hide_buttons,
     from_data
   });
 }

@@ -20,7 +20,7 @@ import {
   pullSession
 } from 'actions';
 
-import { isSnippet, isVideo, isImage, isQR, isText } from './msgProcessor';
+import { isSnippet, isVideo, isImage, isQR, isText, extractMessageQR } from './msgProcessor';
 import WidgetLayout from './layout';
 import { storeLocalSession, getLocalSession } from '../../store/reducers/helper';
 import { SESSION_NAME, NEXT_MESSAGE } from 'constants';
@@ -183,8 +183,9 @@ class Widget extends Component {
     if (isText(message)) {
       this.props.dispatch(addResponseMessage(message.text, from_data));
     } else if (isQR(message)) {
+      let msg = extractMessageQR(message);
       from_data.user_name = this.props.user_name;
-      this.props.dispatch(addQuickReply(message, from_data));
+      this.props.dispatch(addQuickReply(msg, from_data));
     } else if (isSnippet(message)) {
       const element = message.attachment.payload.elements[0];
       this.props.dispatch(addLinkSnippet({
