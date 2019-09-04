@@ -8,7 +8,7 @@ module.exports = {
   entry: './index.js',
   output: {
     path: path.join(__dirname, '/lib'),
-    filename: 'index.js',
+    filename: 'rasa-webchat.js',
     library: 'WebChat',
     libraryTarget: 'umd'
   },
